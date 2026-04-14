@@ -4,5 +4,5 @@ import { getCustomerAccounts } from "./controllers/accounts.controller";
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/getcustomeraccount", getCustomerAccounts);
+app.use("/", getCustomerAccounts);
 export default app;
