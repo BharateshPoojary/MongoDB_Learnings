@@ -32,6 +32,16 @@ const getCustomerAccounts = async (req: Request, res: Response) => {
           account_id: 1,
         }, //In this stage we selected 2 properties type and account_id by setting the value to 1 we are selecting those 2 properties from ecah document
       },
+      {//This stage is as similar as the argument we specify inside find  where it takes the fieldname and the value could be anything may be a expression like here we used $gt and it returns the matching document  
+        $match: { 
+          limit: {//This is the filed name 
+            $gt: 10000,//Here we are  picking the accounts which has limit greater than 10k
+          },
+        },
+      },
+      {//This stage allow us to get the count of the document , this stage got from its previous stage and returns the count of the docs with the output field name  we have to  specify in the $count property 
+        $count:"limitgreaterthan10k"
+      }
       //Both the above stages reshapes each document in the stream
       // {
       //   $bucket: {//Categorizes incoming documents into groups, called buckets, based on a specified expression and bucket boundaries and outputs a document per each bucket.
