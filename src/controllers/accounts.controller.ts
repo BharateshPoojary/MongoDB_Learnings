@@ -6,16 +6,15 @@ const getCustomerAccounts = async (req: Request, res: Response) => {
     // Pipeline 1: collection stats (standalone)
     // const [collectionStats] = await accountModel.aggregate([
     //   {
-    //     $collStats: {//As the name suggests this stage returns the entire statistics of the collection on which we applies thid stage 
+    //     $collStats: {//As the name suggests this stage returns the entire statistics of the collection on which we applies thid stage
     //       latencyStats: { histograms: true },//Latency stats specify the amount of time taken in read , write requests , database transaction and commands
-    //       storageStats: { scale: 1024 },//It shows the amount of space taken by the collection document both compressesed and uncompressed 
-    //       count: {},//It retrns the count of the documents 
+    //       storageStats: { scale: 1024 },//It shows the amount of space taken by the collection document both compressesed and uncompressed
+    //       count: {},//It retrns the count of the documents
     //       queryExecStats: {},
     //     },
-    //   },//This is the stage which gives completely different out put which is of no use in other collection so it is mostly used as single stage in the pipeline 
+    //   },//This is the stage which gives completely different out put which is of no use in other collection so it is mostly used as single stage in the pipeline
     // ]);
     const Aggregation_Pipeline = await accountModel.aggregate([
-
       {
         $addFields: {
           //$set is the alias for $addFields and both works same
@@ -25,6 +24,11 @@ const getCustomerAccounts = async (req: Request, res: Response) => {
         },
       }, //We can add only one stage at a time
       {
+        $sample: {
+          size: 5,
+        },
+      },
+      {
         $project: {
           //This stage enables us to select specific property from the document
           limit: 1,
@@ -32,16 +36,19 @@ const getCustomerAccounts = async (req: Request, res: Response) => {
           account_id: 1,
         }, //In this stage we selected 2 properties type and account_id by setting the value to 1 we are selecting those 2 properties from ecah document
       },
-      {//This stage is as similar as the argument we specify inside find  where it takes the fieldname and the value could be anything may be a expression like here we used $gt and it returns the matching document  
-        $match: { 
-          limit: {//This is the filed name 
-            $gt: 10000,//Here we are  picking the accounts which has limit greater than 10k
+      {
+        //This stage is as similar as the argument we specify inside find  where it takes the fieldname and the value could be anything may be a expression like here we used $gt and it returns the matching document
+        $match: {
+          limit: {
+            //This is the filed name
+            $gt: 10000, //Here we are  picking the accounts which has limit greater than 10k
           },
         },
       },
-      {//This stage allow us to get the count of the document , this stage got from its previous stage and returns the count of the docs with the output field name  we have to  specify in the $count property 
-        $count:"limitgreaterthan10k"
-      }
+      {
+        //This stage allow us to get the count of the document , this stage got from its previous stage and returns the count of the docs with the output field name  we have to  specify in the $count property
+        $count: "limitgreaterthan10k",
+      },
       //Both the above stages reshapes each document in the stream
       // {
       //   $bucket: {//Categorizes incoming documents into groups, called buckets, based on a specified expression and bucket boundaries and outputs a document per each bucket.
