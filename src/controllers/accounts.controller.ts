@@ -24,11 +24,16 @@ const getCustomerAccounts = async (req: Request, res: Response) => {
           test: true,
         },
       }, //We can add only one stage at a time
-      // {
-      //   $sample: {
-      //     size: 5,
-      //   },
-      // },
+      {
+        $facet: {
+          //This stage is used to perform multiple aggregation pipelines within a single stage on the same set of input documents. It allows us to divide the input documents into multiple groups and process each group with a different pipeline, returning the results in a single output document.
+        },
+      },
+      {
+        $sample: {
+          size: 5,
+        },
+      },
       {
         $project: {
           //This stage enables us to select specific property from the document
@@ -87,7 +92,6 @@ const getCustomerAccounts = async (req: Request, res: Response) => {
           allUsers: true,
         },
       },
-      
     ];
 
     res.json({
