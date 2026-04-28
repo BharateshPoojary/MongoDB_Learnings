@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { accountModel } from "../models/account.model";
+import { db } from "../utils/connnect";
 
 const getCustomerAccounts = async (req: Request, res: Response) => {
   try {
@@ -23,11 +24,11 @@ const getCustomerAccounts = async (req: Request, res: Response) => {
           test: true,
         },
       }, //We can add only one stage at a time
-      {
-        $sample: {
-          size: 5,
-        },
-      },
+      // {
+      //   $sample: {
+      //     size: 5,
+      //   },
+      // },
       {
         $project: {
           //This stage enables us to select specific property from the document
@@ -80,6 +81,14 @@ const getCustomerAccounts = async (req: Request, res: Response) => {
       //   },
       // },
     ]);
+    const pipeline = [
+      {
+        $currentOp: {
+          allUsers: true,
+        },
+      },
+      
+    ];
 
     res.json({
       success: true,

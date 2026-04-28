@@ -1,6 +1,6 @@
-import dbConnect from "./utils/connnect";
+import {dbConnect} from "./utils/connnect";
 import app from "./index";
-import { accountModel } from "./models/account.model";
+
 const PORT = 5000;
 (async () => {
   try {
