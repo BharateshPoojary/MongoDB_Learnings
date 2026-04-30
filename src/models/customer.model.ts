@@ -4,6 +4,11 @@ const { Schema, model } = mongoose;
 
 const customerSchema = new Schema(
   {
+    accountId: {
+      type: Schema.Types.ObjectId,
+      ref: "Account",
+    },
+
     username: {
       type: String,
       required: true,

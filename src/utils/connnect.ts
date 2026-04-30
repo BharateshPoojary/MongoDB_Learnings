@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import dns from "dns";
+// import dns from "dns";
 import { startAccountChangeStream } from "../streams/account.stream";
-
-dns.setDefaultResultOrder("ipv4first");
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
+// dns.setDefaultResultOrder("ipv4first");
+// dns.setServers(["8.8.8.8", "8.8.4.4"]);
 dotenv.config();
 
 type ConnectionResObj = {
@@ -19,6 +18,7 @@ const dbConnect = async (): Promise<void> => {
     return;
   }
   try {
+    console.log("Mongo Db ", process.env.MONGODB_URI);
     const dbConnect = await mongoose.connect(process.env.MONGODB_URI!, {});
     startAccountChangeStream();
     db = dbConnect;
