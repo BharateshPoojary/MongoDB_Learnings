@@ -29,7 +29,7 @@ const dbConnect = async (): Promise<void> => {
   }
 };
 
-// ✅ Add this — reuses the same MongoClient mongoose already holds
+// reuses the same MongoClient mongoose already holds
 const getAdminDb = () => {
   if (mongoose.connection.readyState !== 1) {
     throw new Error("Database not connected");

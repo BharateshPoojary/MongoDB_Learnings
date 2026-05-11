@@ -1,7 +1,27 @@
 import { Request, Response } from "express";
 import { accountModel } from "../models/account.model";
-import { db } from "../utils/connnect";
+import { getAdminDb } from "../utils/connnect";
 
+const runAdminPipeline = async (req: Request, res: Response) => {
+  const adminDb = getAdminDb();
+
+  const pipeline = [
+    {
+      $currentOp: {
+        allUsers: false,
+        localOps: false,
+      },
+    }
+  ];
+
+  const cursor = adminDb.aggregate(pipeline);
+  const results = await cursor.toArray();
+
+  res.json({
+    success: true,
+    data: results,
+  });
+};
 const getCustomerAccounts = async (req: Request, res: Response) => {
   try {
     // Pipeline 1: collection stats (standalone)
@@ -86,13 +106,6 @@ const getCustomerAccounts = async (req: Request, res: Response) => {
       //   },
       // },
     ]);
-    const pipeline = [
-      {
-        $currentOp: {
-          allUsers: true,
-        },
-      },
-    ];
 
     res.json({
       success: true,
@@ -125,4 +138,4 @@ const updateAccountLimit = async (req: Request, res: Response) => {
     res.json({ success: false });
   }
 };
-export { getCustomerAccounts, updateAccountLimit };
+export { getCustomerAccounts, updateAccountLimit, runAdminPipeline };
