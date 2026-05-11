@@ -1,7 +1,7 @@
 import {dbConnect} from "./utils/connnect";
 import app from "./index";
 
-const PORT = 5000;
+const PORT = 8000;
 (async () => {
   try {
     await dbConnect();
