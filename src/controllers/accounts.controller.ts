@@ -3,20 +3,23 @@ import { accountModel } from "../models/account.model";
 import { getAdminDb } from "../utils/connnect";
 
 const runAdminPipeline = async (req: Request, res: Response) => {
-  const adminDb = getAdminDb();
-
+  const adminDb = getAdminDb(); //getting the admin db access
+//In real world usecase this must run continuously to see the live operations on ourdb or cluster  
   const pipeline = [
     {
-      $currentOp: {
-        allUsers: false,
-        localOps: false,
-      },
-    }
+      $currentOp: {}, //There are several options but I have kept it empty so that it will pick the default options
+    },
   ];
 
-  const cursor = adminDb.aggregate(pipeline);
+  const cursor = adminDb.aggregate(pipeline); //this returns an aggregate cursor , It returns a cursor — a pointer to the result set on the server.
   const results = await cursor.toArray();
+  //the toArray method does 3 things
+  // It does three things internally:
 
+  // Iterates through every document in the cursor
+  // Collects them all into an array
+  // Closes the cursor automatically when done
+//currently this only monitors the sample_analytics db but to monitor the entire cluster, you need to remove the database name from the connection string and use allUsers: true in $currentOp.
   res.json({
     success: true,
     data: results,
@@ -24,7 +27,7 @@ const runAdminPipeline = async (req: Request, res: Response) => {
 };
 const getCustomerAccounts = async (req: Request, res: Response) => {
   try {
-    console.log("I am here");
+    // console.log("I am here");
     // Pipeline 1: collection stats (standalone)
     // const [collectionStats] = await accountModel.aggregate([
     //   {

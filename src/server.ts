@@ -1,6 +1,7 @@
 import {dbConnect} from "./utils/connnect";
 import app from "./index";
-
+import dns from"dns"
+dns.setServers(["8.8.8.8","8.8.4.4"])
 const PORT = 8000;
 (async () => {
   try {
